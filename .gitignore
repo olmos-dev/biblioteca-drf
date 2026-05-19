@@ -1,0 +1,29 @@
+# Entorno virtual
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Variables de entorno
+.env
+
+# Archivos de Django
+media/
+staticfiles/
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Migraciones opcionales
+ */migrations/*.py
+ !*/migrations/__init__.py
