@@ -12,9 +12,9 @@ class Prestamo(HistoricalModel):
     ('retrasado', 'Retrasado'),
   )
 
-  libro = models.ForeignKey('Libro', related_name="prestamos", on_delete=models.PROTECT)
-  estudiante = models.ForeignKey('User', related_name="prestamos_estudiante", on_delete=models.PROTECT)
-  encargado = models.ForeignKey('User', related_name="prestamos_registros", on_delete=models.PROTECT)
+  libro = models.ForeignKey(Libro, related_name="prestamos", on_delete=models.PROTECT)
+  estudiante = models.ForeignKey(User, related_name="prestamos_estudiante", on_delete=models.PROTECT)
+  encargado = models.ForeignKey(User, related_name="prestamos_registros", on_delete=models.PROTECT)
   fecha_prestamo = models.DateField()
   fecha_devolucion = models.DateField(null=True, blank=True)
   fecha_limite_entrega = models.DateField()
