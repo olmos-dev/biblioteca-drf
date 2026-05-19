@@ -25,5 +25,5 @@ staticfiles/
 Thumbs.db
 
 # Migraciones opcionales
- */migrations/*.py
- !*/migrations/__init__.py
+*/migrations/*.py
+!*/migrations/__init__.py
