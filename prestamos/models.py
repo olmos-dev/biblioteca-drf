@@ -2,19 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from core.models import HistoricalModel
 from libros.models import Libro
-
+from core.constants import ESTADO_CHOICES
 
 class Prestamo(HistoricalModel):
-
-  ESTADO_CHOICES = (
-    ('prestado', 'Prestado'),
-    ('devuelto', 'Devuelto'),
-    ('retrasado', 'Retrasado'),
-  )
-
-  libro = models.ForeignKey(Libro, related_name="prestamos", on_delete=models.PROTECT)
-  estudiante = models.ForeignKey(User, related_name="prestamos_estudiante", on_delete=models.PROTECT)
-  encargado = models.ForeignKey(User, related_name="prestamos_registros", on_delete=models.PROTECT)
+  libro = models.ForeignKey(Libro, related_name="libros", on_delete=models.PROTECT)
+  estudiante = models.ForeignKey(User, related_name="estudiantes", on_delete=models.PROTECT)
+  encargado = models.ForeignKey(User, related_name="encargados", on_delete=models.PROTECT)
   fecha_prestamo = models.DateField()
   fecha_devolucion = models.DateField(null=True, blank=True)
   fecha_limite_entrega = models.DateField()

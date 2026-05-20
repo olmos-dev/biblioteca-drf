@@ -31,4 +31,5 @@ class LibroSerializer(serializers.ModelSerializer):
 class LibroSimpreSerializer(serializers.ModelSerializer):
   class Meta:
     model = Libro
-    fields = ["id","titulo"]
+    fields = ["titulo"]
+    #fields = ["id","titulo"]

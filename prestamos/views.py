@@ -1,3 +1,51 @@
-from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Prestamo
+from .serializer import PrestamoListarSerializer,PrestamoCreateUpdateSerializer
+from rest_framework import status
 
-# Create your views here.
+#Listar prestamos
+class PrestamoListarApiView(APIView):
+  
+  def get(self, request):
+    queryset = Prestamo.objects.select_related('libro','estudiante','encargado')
+    serializer = PrestamoListarSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+#Acciones prestamo - ver, editar y eliminar
+class PrestamoAccionesApiView(APIView):
+
+  def get(self, request, pk):
+    try:
+      prestamo = Prestamo.objects.select_related('libro','estudiante','encargado').get(pk=pk)
+      serializer_prestamo = PrestamoListarSerializer(prestamo)
+      return Response(serializer_prestamo.data, status=status.HTTP_200_OK)
+    except Prestamo.DoesNotExist:
+     return Response({"message":"Prestamo no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+    
+  def put(self, request, pk):
+    try:
+      prestamo = Prestamo.objects.get(pk=pk)
+      serializer_prestamo = PrestamoCreateUpdateSerializer(prestamo, data=request.data)
+      
+      if serializer_prestamo.is_valid():
+        serializer_prestamo.save()
+        return Response(serializer_prestamo.data, status = status.HTTP_200_OK)
+      
+      return Response(serializer_prestamo.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    except Prestamo.DoesNotExist:
+     return Response({"message":"Prestamo no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+    
+  def delete(self, request, pk):
+    try:
+      prestamo = Prestamo.objects.get(pk=pk)
+      folio = prestamo.id
+      prestamo.delete()
+     
+      return Response({'message':f"Prestamo con folio {folio} se ha cancelado."}, status=status.HTTP_200_OK)
+    
+    except Prestamo.DoesNotExist:
+      return Response({"message":"Prestamo no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+
