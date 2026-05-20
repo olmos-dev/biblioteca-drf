@@ -2,9 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
 
-from .models import Autor
-from .serializer import AutorSerializer
+from .models import Autor, Categoria
+from .serializer import AutorSerializer, CategoriaSerializer
 
 
 class AutorApiView(APIView):
@@ -56,6 +57,11 @@ class AutorDetailApiView(APIView):
       obj_autor.delete()
       return Response({'message':f"Autor {nombre} se ha eliminado."}, status=status.HTTP_200_OK)
 
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+  serializer_class = CategoriaSerializer
+  queryset = Categoria.objects.all()
+  #permission_classes = [IsAccountAdminOrReadOnly]
 
     
 

@@ -1,29 +1,32 @@
-# Entorno virtual
-venv/
-env/
-
 # Python
 __pycache__/
 *.py[cod]
-*.sqlite3
 
-# Variables de entorno
-.env
-
-# Archivos de Django
-media/
-staticfiles/
+# Virtual env
+venv/
+env/
 
 # VSCode
 .vscode/
 
-# PyCharm
-.idea/
+# Database
+db.sqlite3
 
-# Archivos del sistema
+# Environment variables
+.env
+
+# Media files
+media/
+
+# Static files
+staticfiles/
+
+# Django migrations
+**/migrations/*
+!**/migrations/__init__.py
+
+# Pytest
+.pytest_cache/
+
+# Mac
 .DS_Store
-Thumbs.db
-
-# Migraciones opcionales
-*/migrations/*.py
-!*/migrations/__init__.py

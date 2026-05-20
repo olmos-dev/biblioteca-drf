@@ -1,8 +1,9 @@
 from rest_framework.permissions import BasePermission
-
-ADMINISTRADOR = 'administrador'
-ENCARGADO = 'encargado'
-ESTUDIANTE = 'estudiante'
+from core.constants import (
+    ADMINISTRADOR,
+    ENCARGADO,
+    ESTUDIANTE
+)
 
 #Administrador
 class EsAdministrador(BasePermission):

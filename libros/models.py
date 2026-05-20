@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from core.models import HistoricalModel
 
 
@@ -16,12 +17,20 @@ class Autor(HistoricalModel):
         return self.nombre
 
 class Categoria(HistoricalModel):
-  nombre = models.CharField(max_length=100, unique=True)
+  nombre = models.CharField(max_length=100, unique=False)
   descripcion = models.TextField(null=True, blank=True)
 
   class Meta:
     db_table = 'categoria'
     ordering = ['-id']
+
+    constraints = [
+      models.UniqueConstraint(
+        fields=["nombre"],
+        condition=Q(deleted__isnull = True),
+        name='unique_categoria_activa'
+      )
+    ]
 
   def __str__(self):
         return self.nombre
