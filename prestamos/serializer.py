@@ -22,10 +22,10 @@ class PrestamoListarSerializer(serializers.ModelSerializer):
               "estado","observaciones"
             ] 
 
-class PrestamoCreateSerializer(serializers.ModelSerializer):
+class PrestamoSerializer(serializers.ModelSerializer):
   class Meta:
     model = Prestamo
-    fields = ["id","libro","estudiante","encargado", "observaciones"]
+    fields = ["libro","estudiante","encargado", "observaciones"]
 
 class PrestamoDevolucionSerializer(serializers.ModelSerializer):
   class Meta:

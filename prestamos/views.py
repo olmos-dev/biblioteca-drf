@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Prestamo
-from .serializer import PrestamoListarSerializer,PrestamoCreateSerializer,PrestamoDevolucionSerializer
+from .serializer import PrestamoListarSerializer,PrestamoSerializer,PrestamoDevolucionSerializer
 from rest_framework import status
 from django.utils import timezone
 from core.utils.calcular import calcular_fecha_entrega
@@ -15,13 +15,14 @@ class PrestamoListarApiView(APIView):
     return Response(serializer.data)
   
   def post(self, request):
-    prestamo = PrestamoCreateSerializer(data = request.data)
+
+    prestamo = PrestamoSerializer(data = request.data)
     
     if prestamo.is_valid():
       
       #instancia del libro
       libro = prestamo.validated_data['libro']
-      
+
       #verificar que no este agotado
       if libro.agotado:
         return Response({"error":"Libro agotado"}, status=status.HTTP_400_BAD_REQUEST)
@@ -63,14 +64,7 @@ class PrestamoDevolucionApiView(APIView):
     
     except Prestamo.DoesNotExist:
       return Response({"message":"Prestamo no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-
-
-
-
-
-
-
-
+    
 
 #Acciones prestamo - ver, editar y eliminar
 class PrestamoAccionesApiView(APIView):
@@ -85,11 +79,30 @@ class PrestamoAccionesApiView(APIView):
     
   def put(self, request, pk):
     try:
-      prestamo = Prestamo.objects.get(pk=pk)
-      serializer_prestamo = PrestamoCreateUpdateSerializer(prestamo, data=request.data)
+      prestamo = Prestamo.objects.select_related('libro').get(pk=pk)
+      serializer_prestamo = PrestamoSerializer(prestamo, data=request.data)
       
       if serializer_prestamo.is_valid():
-        serializer_prestamo.save()
+        #instancia del libro
+        libro = serializer_prestamo.validated_data['libro']
+        if libro.id != prestamo.libro.id:
+
+          #verificar que no este agotado
+          if libro.agotado:
+            return Response({"error":"Libro agotado"}, status=status.HTTP_400_BAD_REQUEST)
+          
+          #se vuelve
+          prestamo.libro.copias_disponibles += 1
+          prestamo.libro.save()
+          
+          #se descuenta del stock
+          libro.copias_disponibles -= 1
+          libro.save()
+
+          serializer_prestamo.save()
+
+          return Response({"message":f"Se actualizo el prestamo con folio {prestamo.folio}"}, status=status.HTTP_201_CREATED)
+        
         return Response(serializer_prestamo.data, status = status.HTTP_200_OK)
       
       return Response(serializer_prestamo.errors, status=status.HTTP_400_BAD_REQUEST)
