@@ -18,17 +18,13 @@ class PrestamoListarSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Prestamo
-    fields = ["id","libro_titulo","estudiante_nombre","encargado_nombre",
+    fields = ["id","folio","libro_titulo","estudiante_nombre","encargado_nombre",
               "fecha_prestamo","fecha_devolucion","fecha_limite_entrega",
               "estado","observaciones"
             ] 
 
-class PrestamoCreateUpdateSerializer(serializers.ModelSerializer):
+class PrestamoCreateSerializer(serializers.ModelSerializer):
   class Meta:
     model = Prestamo
-    fields = ["id","libro","estudiante","encargado",
-              "fecha_prestamo","fecha_devolucion","fecha_limite_entrega",
-              "estado","observaciones"
-            ] 
-
+    fields = ["id","libro","estudiante","encargado", "observaciones"]
 

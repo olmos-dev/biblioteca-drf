@@ -10,3 +10,6 @@ ESTADO_CHOICES = (
   ('retrasado', 'Retrasado'),
 )
 
+#dias de prestamo de los libro - 3 dias habiles
+DIAS_PRESTAMO = 3
+

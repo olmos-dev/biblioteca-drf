@@ -1,8 +1,10 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Prestamo
-from .serializer import PrestamoListarSerializer,PrestamoCreateUpdateSerializer
+from .serializer import PrestamoListarSerializer,PrestamoCreateSerializer
 from rest_framework import status
+from django.utils import timezone
+from core.utils.calcular import calcular_fecha_entrega
 
 #Listar prestamos
 class PrestamoListarApiView(APIView):
@@ -11,6 +13,38 @@ class PrestamoListarApiView(APIView):
     queryset = Prestamo.objects.select_related('libro','estudiante','encargado')
     serializer = PrestamoListarSerializer(queryset, many=True)
     return Response(serializer.data)
+  
+  def post(self, request):
+    prestamo = PrestamoCreateSerializer(data = request.data)
+    
+    if prestamo.is_valid():
+      
+      #instancia del libro
+      libro = prestamo.validated_data['libro']
+      #print("Libro id: ", libro.id)
+
+      #verificar que no este agotado
+      if libro.agotado:
+        return Response({"error":"Libro agotado"}, status=status.HTTP_400_BAD_REQUEST)
+
+      #se descuenta del stock
+      libro.copias_disponibles -= 1
+      libro.save()
+
+      #se agregan datos automaticos del prestamo
+      prestamo.save(
+        fecha_prestamo = timezone.now().date(),
+        fecha_limite_entrega = calcular_fecha_entrega(timezone.now().date())
+      )
+      return Response(prestamo.data, status=status.HTTP_201_CREATED)
+    
+    return Response(prestamo.errors, status=status.HTTP_201_CREATED)
+
+
+
+
+
+
 
 #Acciones prestamo - ver, editar y eliminar
 class PrestamoAccionesApiView(APIView):
