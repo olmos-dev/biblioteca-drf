@@ -27,6 +27,8 @@ class Command(BaseCommand):
             {
                 "username": "Alberto",
                 "password": "123",
+                "first_name":"Albertol",
+                "last_name":"Olmos",
                 "email":"alberto@mail.com",
                 "group": grupo_admin
             },
@@ -35,6 +37,8 @@ class Command(BaseCommand):
                 "username": "Ana",
                 "email":"ana@mail.com",
                 "password": "123",
+                "first_name":"Ana",
+                "last_name":"Gonzalez",
                 "group": grupo_encargado
             },
 
@@ -42,6 +46,8 @@ class Command(BaseCommand):
                 "username": "Jose",
                 "email":"jose@mail.com",
                 "password": "123",
+                "first_name":"Jose",
+                "last_name":"Hernandez",
                 "group": grupo_estudiante
             },
         ]

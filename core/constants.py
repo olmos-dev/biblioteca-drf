@@ -7,7 +7,6 @@ ESTUDIANTE = 'estudiante'
 ESTADO_CHOICES = (
   ('prestado', 'Prestado'),
   ('devuelto', 'Devuelto'),
-  ('retrasado', 'Retrasado'),
 )
 
 #dias de prestamo de los libro - 3 dias habiles

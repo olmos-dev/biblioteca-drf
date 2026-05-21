@@ -7,8 +7,7 @@ from django.contrib.auth.models import User
 class UsuarioSimpleSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ["username"]
-    #fields = ["id","username"]
+    fields = ["first_name", "last_name"]
 
 class PrestamoListarSerializer(serializers.ModelSerializer):
 
@@ -27,4 +26,9 @@ class PrestamoCreateSerializer(serializers.ModelSerializer):
   class Meta:
     model = Prestamo
     fields = ["id","libro","estudiante","encargado", "observaciones"]
+
+class PrestamoDevolucionSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Prestamo
+    fields = ["fecha_devolucion","estado"]
 

@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Prestamo
-from .serializer import PrestamoListarSerializer,PrestamoCreateSerializer
+from .serializer import PrestamoListarSerializer,PrestamoCreateSerializer,PrestamoDevolucionSerializer
 from rest_framework import status
 from django.utils import timezone
 from core.utils.calcular import calcular_fecha_entrega
@@ -21,8 +21,7 @@ class PrestamoListarApiView(APIView):
       
       #instancia del libro
       libro = prestamo.validated_data['libro']
-      #print("Libro id: ", libro.id)
-
+      
       #verificar que no este agotado
       if libro.agotado:
         return Response({"error":"Libro agotado"}, status=status.HTTP_400_BAD_REQUEST)
@@ -38,7 +37,34 @@ class PrestamoListarApiView(APIView):
       )
       return Response(prestamo.data, status=status.HTTP_201_CREATED)
     
-    return Response(prestamo.errors, status=status.HTTP_201_CREATED)
+    return Response(prestamo.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PrestamoDevolucionApiView(APIView):
+  def patch(self, request, pk):
+    try:
+      prestamo = Prestamo.objects.select_related('libro').get(pk=pk)
+
+      if prestamo.estado == 'devuelto':
+        return Response({"message":"El libro ya fue devuelto"}, status=status.HTTP_400_BAD_REQUEST)
+      
+      libro = prestamo.libro
+
+      #se incrementa en el stock
+      libro.copias_disponibles += 1
+      libro.save()
+
+      #actualizacion automatica
+      prestamo.fecha_devolucion = timezone.now().date()
+      prestamo.estado = 'devuelto'
+      prestamo.save()
+
+      return Response({"message":f"Se realizo prestamos del libro: {libro.titulo} con folio: {prestamo.folio}"}, status=status.HTTP_200_OK)
+    
+    except Prestamo.DoesNotExist:
+      return Response({"message":"Prestamo no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 
 
